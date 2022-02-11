@@ -1,0 +1,6 @@
+/.bsp/
+target/
+target
+.metals
+.vscode
+
