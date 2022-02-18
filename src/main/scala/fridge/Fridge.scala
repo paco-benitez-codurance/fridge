@@ -12,16 +12,8 @@ class Fridge {
     var currentDate: LocalDate = LocalDate.now
     var doorOpened = false
 
-
-    def signalFridgeDoorOpened() = {
-        if(doorOpened) throw new UnsupportedOperationException("Door already opened")
-        doorOpened = true
-    }
-
-    def signalFridgeDoorClosed() = {
-        if(doorOpened == false) throw new UnsupportedOperationException("Door already opened")
-        doorOpened = false
-    }
+    def signalFridgeDoorOpened() = changeDoorState(true)
+    def signalFridgeDoorClosed() = changeDoorState(false)
 
 
     def scanAddedItem(name: String, expiry: String, condition: String) = ???
@@ -38,4 +30,9 @@ class Fridge {
     }
 
     def getTempCurrentDate(): LocalDate = currentDate
+
+    private def changeDoorState(wantedState: Boolean) = {
+        if(doorOpened == wantedState) throw new UnsupportedOperationException
+        doorOpened = wantedState
+    }
 }
