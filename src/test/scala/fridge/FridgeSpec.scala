@@ -37,5 +37,38 @@ class FridgeSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
         fridge.simulateDayOver()
         fridge.getTempCurrentDate() should be(LocalDate.of(2021, 4, 20))
     }
+
+    "Fridge signalFridgeDoorOpened" should "allow open door" in {
+        noException should be thrownBy fridge.signalFridgeDoorOpened()
+    }
+
+    "Fridge signalFridgeDoorOpened" should "not allow open door twice" in {
+        fridge.signalFridgeDoorOpened()
+
+        assertThrows[java.lang.UnsupportedOperationException] {
+            fridge.signalFridgeDoorOpened()
+        }
+    }
+
+    "Fridge signalFridgeDoorClosed" should "allow close door if it is open" in {
+        fridge.signalFridgeDoorOpened()
+        noException should be thrownBy fridge.signalFridgeDoorClosed()
+    }
+
+    "Fridge signalFridgeDoorOpened / signalFridgeDoorClosed" should "be cooherent" in {
+        noException should be thrownBy {
+            fridge.signalFridgeDoorOpened()
+            fridge.signalFridgeDoorClosed()
+            fridge.signalFridgeDoorOpened()
+            fridge.signalFridgeDoorClosed()
+        }
+    }
+
+    "Fridge signalFridgeDoorClosed / " should "allow not allow close door if it is not open" in {
+        assertThrows[java.lang.UnsupportedOperationException] {
+            fridge.signalFridgeDoorClosed()
+        }
+    }
+
   
 }

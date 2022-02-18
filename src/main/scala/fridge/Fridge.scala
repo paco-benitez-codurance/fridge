@@ -10,10 +10,20 @@ object Fridge {
 class Fridge {
 
     var currentDate: LocalDate = LocalDate.now
+    var doorOpened = false
 
 
-    def signalFridgeDoorOpened() = {}
-    def signalFridgeDoorClosed() = {}
+    def signalFridgeDoorOpened() = {
+        if(doorOpened) throw new UnsupportedOperationException("Door already opened")
+        doorOpened = true
+    }
+
+    def signalFridgeDoorClosed() = {
+        if(doorOpened == false) throw new UnsupportedOperationException("Door already opened")
+        doorOpened = false
+    }
+
+
     def scanAddedItem(name: String, expiry: String, condition: String) = ???
     def scanRemovedItem(name: String) = ???
     def showDisplay(): String = ???
