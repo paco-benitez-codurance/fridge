@@ -30,13 +30,7 @@ class Fridge {
     }
 
     def showDisplay(): String = {
-        this.items.map(formatItem).mkString("\n")
-    }
-
-    private def formatItem(item: Item) = {
-        val daysBet = days(item.expiry, currentDate)
-        val wordDays = if(daysBet == 1) "day" else "days"
-        s"${item.name}: ${daysBet } ${wordDays} remaining"
+        Formatter.showDisplay(items, currentDate)
     }
 
     def simulateDayOver() = {
@@ -51,9 +45,6 @@ class Fridge {
 
     private def containsItem(name: String): Boolean = 
         this.items.map(_.name).contains(name)
-
-    private def days(from: LocalDate, to: LocalDate): Long = 
-        ChronoUnit.DAYS.between(to, from)
 
 
     private def changeDoorState(wantedState: Boolean) = {
