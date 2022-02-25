@@ -2,16 +2,18 @@ package fridge
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 object Fridge {
     val Formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val Formatter2 = DateTimeFormatter.ofPattern("dd/MM/yy")
 }
 
 class Fridge {
 
     var currentDate: LocalDate = LocalDate.now
     var doorOpened = false
-    var item: Seq[String]= Seq()
+    var items: Seq[Item]= Seq()
 
     def signalFridgeDoorOpened() = changeDoorState(true)
     def signalFridgeDoorClosed() = changeDoorState(false)
@@ -19,19 +21,23 @@ class Fridge {
 
     def scanAddedItem(name: String, expiry: String, condition: String) = {
         assertDoorOpen()
-        this.item = this.item :+ name
+        this.items = this.items :+ Item(name, LocalDate.parse(expiry, Fridge.Formatter2)) 
     }
 
     def scanRemovedItem(name: String) = {
         assertDoorOpen()
-        if(this.item.contains(name) == false) throw new UnsupportedOperationException
+        if(containsItem(name) == false) throw new UnsupportedOperationException
     }
 
-    def showDisplay(): String =   """EXPIRED: Milk
-Lettuce: 0 days remaining
-Peppers: 1 day remaining
-Cheese: 31 days remaining"""
+    def showDisplay(): String = {
+        this.items.map(formatItem).mkString("\n")
+    }
 
+    private def formatItem(item: Item) = {
+        val daysBet = days(item.expiry, currentDate)
+        val wordDays = if(daysBet == 1) "day" else "days"
+        s"${item.name}: ${daysBet } ${wordDays} remaining"
+    }
 
     def simulateDayOver() = {
         currentDate = currentDate.plusDays(1)
@@ -42,6 +48,13 @@ Cheese: 31 days remaining"""
     }
 
     def getTempCurrentDate(): LocalDate = currentDate
+
+    private def containsItem(name: String): Boolean = 
+        this.items.map(_.name).contains(name)
+
+    private def days(from: LocalDate, to: LocalDate): Long = 
+        ChronoUnit.DAYS.between(to, from)
+
 
     private def changeDoorState(wantedState: Boolean) = {
         if(doorOpened == wantedState) 
