@@ -5,8 +5,11 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 object Fridge {
-    val Formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val Formatter2 = DateTimeFormatter.ofPattern("dd/MM/yy")
+    val FormatterCurrentDate = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val FormatterItems = DateTimeFormatter.ofPattern("dd/MM/yy")
+
+    private def days(from: LocalDate, to: LocalDate): Long = 
+        ChronoUnit.DAYS.between(to, from)
 }
 
 class Fridge {
@@ -21,7 +24,7 @@ class Fridge {
 
     def scanAddedItem(name: String, expiry: String, condition: String) = {
         assertDoorOpen()
-        this.items = this.items :+ Item(name, LocalDate.parse(expiry, Fridge.Formatter2)) 
+        this.items = this.items :+ Item(name, LocalDate.parse(expiry, Fridge.FormatterItems)) 
     }
 
     def scanRemovedItem(name: String) = {
@@ -30,7 +33,8 @@ class Fridge {
     }
 
     def showDisplay(): String = {
-        Formatter.showDisplay(items, currentDate)
+        val itemsWithDays = items.map(item => (item, Fridge.days(item.expiry, currentDate)))
+        Formatter.showDisplay(itemsWithDays)
     }
 
     def simulateDayOver() = {
@@ -38,7 +42,7 @@ class Fridge {
     }
 
     def setCurrentDate(date: String) = {
-        currentDate = LocalDate.parse(date, Fridge.Formatter)
+        currentDate = LocalDate.parse(date, Fridge.FormatterCurrentDate)
     }
 
     def getTempCurrentDate(): LocalDate = currentDate

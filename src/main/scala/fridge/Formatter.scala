@@ -5,17 +5,13 @@ import java.time.temporal.ChronoUnit
 
 object Formatter {
 
-    def showDisplay(items: Seq[Item], currentDate: LocalDate): String = {
-        items.map(formatItem(_, currentDate)).mkString("\n")
+    def showDisplay(items: Seq[(Item, Long)]): String = {
+        items.map(item => formatItem(item._1, item._2)).mkString("\n")
     }
 
-    private def formatItem(item: Item, currentDate: LocalDate) = {
-        val daysBet = days(item.expiry, currentDate)
+    private def formatItem(item: Item, remainingDays: Long) = {
+        val daysBet = remainingDays
         val wordDays = if(daysBet == 1) "day" else "days"
         s"${item.name}: ${daysBet } ${wordDays} remaining"
     }
-
-     private def days(from: LocalDate, to: LocalDate): Long = 
-        ChronoUnit.DAYS.between(to, from)
-  
 }
