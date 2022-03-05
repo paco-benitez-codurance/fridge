@@ -26,7 +26,7 @@ object Formatter {
     private def formatItem(item: Item, remainingDays: Long): String = {
         val daysBet = remainingDays
         val wordDays = if(daysBet == 1) "day" else "days"
-        s"${item.name}: ${daysBet } ${wordDays} remaining"
+        s"${item.name}: ${daysBet} ${wordDays} remaining"
     }
 
     private def formatExpiryItem(item: Item): String = {
