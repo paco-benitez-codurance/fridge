@@ -7,11 +7,11 @@ import org.scalatest.matchers.should.Matchers
 import java.time.LocalDate
 
 
-class AddRemoveSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
+class AddRemoveSpec extends AnyFlatSpec with Matchers with BeforeAndAfterEach {
 
     var fridge: Fridge = null
 
-    before {
+    override def beforeEach() = {
         fridge = new Fridge()
     }
 
@@ -57,4 +57,18 @@ class AddRemoveSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
             fridge.scanRemovedItem("Milk")
         }
     }
+
+    "Fridge scanAddedItem" should "show item in display" in {
+        fridge.signalFridgeDoorOpened()
+        fridge.scanAddedItem(name = "Milk", expiry= "21/10/21", condition= "sealed")
+        fridge.showDisplay() should include ("Milk")
+    }
+
+    "Fridge scanRemoveItem" should "show remove item in display" in {
+        fridge.signalFridgeDoorOpened()
+        fridge.scanAddedItem(name = "Milk", expiry= "21/10/21", condition= "sealed")
+        fridge.scanRemovedItem("Milk")
+        fridge.showDisplay() should not include ("Milk")
+    }
+
 }

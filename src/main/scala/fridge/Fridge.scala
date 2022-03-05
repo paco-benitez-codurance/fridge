@@ -22,11 +22,17 @@ class Fridge {
     def scanRemovedItem(name: String) = {
         assertDoorOpen()
         if(containsItem(name) == false) throw new UnsupportedOperationException
+        this.items = this.items.filter(_.name != name)
     }
 
     def showDisplay(): String = {
-        val itemsWithDays = items.map(item => (item, RemainingDays(DateUtil.days(item.expiry, currentDate))))
+        val itemsWithDays = items.map(item => (item, toRemaindingDays(DateUtil.days(item.expiry, currentDate))))
         Formatter.showDisplay(itemsWithDays)
+    }
+
+    def toRemaindingDays(days: Long): TimeToConsume = {
+        if(days >= 0) RemainingDays(days)
+        else Expired
     }
 
     def simulateDayOver() = {
