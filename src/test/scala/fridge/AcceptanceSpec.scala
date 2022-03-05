@@ -3,7 +3,7 @@ package fridge
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class AcceptanceSpec(ignore: String) extends AnyFlatSpec with Matchers {
+class AcceptanceSpec(ignore: Boolean) extends AnyFlatSpec with Matchers {
   "Fridge" should "run simulation of three days" in {
     val fridge = new Fridge()
 

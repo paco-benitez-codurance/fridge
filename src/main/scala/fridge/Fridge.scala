@@ -8,8 +8,10 @@ object Fridge {
     val FormatterCurrentDate = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     val FormatterItems = DateTimeFormatter.ofPattern("dd/MM/yy")
 
-    private def days(from: LocalDate, to: LocalDate): Long = 
-        ChronoUnit.DAYS.between(to, from)
+    private def days(from: LocalDate, to: LocalDate): RemainingDays = {
+        val days = ChronoUnit.DAYS.between(to, from)
+        RemainingDays(days)
+    }
 }
 
 class Fridge {
