@@ -4,15 +4,39 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
+object Fridge {
+    def degradation(item: Item, days: Long) : Long = {
+        days - (item.numberOfOpen / 24)
+    }
+
+    def daysToTimeToConsume(days: Long): TimeToConsume = {
+        if(days >= 0) RemainingDays(days)
+        else Expired
+    }
+
+    def remainingDays(item: Item, currentDate: LocalDate) = {
+        daysToTimeToConsume(
+            degradation(
+                item,
+                DateUtil.days(item.expiry, currentDate)
+            )
+        )
+
+    }
+}
+
 class Fridge {
 
     var currentDate: LocalDate = LocalDate.now
     var doorOpened = false
     var items: Seq[Item]= Seq()
 
-    def signalFridgeDoorOpened() = changeDoorState(true)
-    def signalFridgeDoorClosed() = changeDoorState(false)
+    def signalFridgeDoorOpened() = {
+        this.items = items.map(item => item.copy(numberOfOpen = item.numberOfOpen + 1))
+        changeDoorState(true)
+    }
 
+    def signalFridgeDoorClosed() = changeDoorState(false)
 
     def scanAddedItem(name: String, expiry: String, condition: String) = {
         assertDoorOpen()
@@ -26,13 +50,10 @@ class Fridge {
     }
 
     def showDisplay(): String = {
-        val itemsWithDays = items.map(item => (item, toRemaindingDays(DateUtil.days(item.expiry, currentDate))))
+        val itemsWithDays = items.map(
+            item => (item, Fridge.remainingDays(item, currentDate))
+        )
         Formatter.showDisplay(itemsWithDays)
-    }
-
-    def toRemaindingDays(days: Long): TimeToConsume = {
-        if(days >= 0) RemainingDays(days)
-        else Expired
     }
 
     def simulateDayOver() = {
