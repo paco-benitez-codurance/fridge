@@ -22,13 +22,11 @@ object Fridge {
     }
 
     def remainingDays(item: Item, currentDate: LocalDate) = {
-        daysToTimeToConsume(
-            degradation(
+        val daysDegraded = degradation(
                 item,
                 DateUtil.days(item.expiry, currentDate)
             )
-        )
-
+        daysToTimeToConsume(daysDegraded)
     }
 }
 
