@@ -6,7 +6,14 @@ import java.time.temporal.ChronoUnit
 
 object Fridge {
     def degradation(item: Item, days: Long) : Long = {
-        days - (item.numberOfOpen / 24)
+        val hoursDegraded = if(item.condition == "opened") {
+            item.numberOfOpen * 5  
+        } else {
+            item.numberOfOpen * 1
+        }
+
+        var daysDegarded = hoursDegraded / 24
+        days - daysDegarded
     }
 
     def daysToTimeToConsume(days: Long): TimeToConsume = {
@@ -40,7 +47,7 @@ class Fridge {
 
     def scanAddedItem(name: String, expiry: String, condition: String) = {
         assertDoorOpen()
-        this.items = this.items :+ Item(name, DateUtil.formatItemDate(expiry)) 
+        this.items = this.items :+ Item(name, DateUtil.formatItemDate(expiry), condition) 
     }
 
     def scanRemovedItem(name: String) = {
